@@ -2,7 +2,7 @@
 
 Name:           %{?scl_prefix}perl-Thread-Queue
 Version:        3.13
-Release:        451%{?dist}
+Release:        452%{?dist}
 Summary:        Thread-safe queues
 License:        GPL+ or Artistic
 URL:            https://metacpan.org/release/Thread-Queue
@@ -15,7 +15,6 @@ BuildRequires:  %{?scl_prefix}perl(Config)
 BuildRequires:  %{?scl_prefix}perl(ExtUtils::MakeMaker) >= 6.76
 BuildRequires:  %{?scl_prefix}perl(strict)
 BuildRequires:  %{?scl_prefix}perl(warnings)
-BuildRequires:  sed
 # Run-time:
 BuildRequires:  %{?scl_prefix}perl(Carp)
 BuildRequires:  %{?scl_prefix}perl(Scalar::Util) >= 1.10
@@ -37,7 +36,7 @@ any number of threads.
 %prep
 %setup -q -n Thread-Queue-%{version}
 # Correct shell bang
-sed -i -e '1 s|^#!/usr/bin/env perl|%(%{?scl:scl enable %{scl} '}perl -MConfig -e %{?scl:'"}'%{?scl:"'}print $Config{startperl}%{?scl:'"}'%{?scl:"'}%{?scl:'})|' examples/queue.pl
+%{?scl:scl enable %{scl} '}perl -MConfig -i -pe %{?scl:'"}'%{?scl:"'}s{^#!/usr/bin/(?:env )?perl}{$Config{startperl}}%{?scl:'"}'%{?scl:"'} examples/*%{?scl:'}
 
 %build
 %{?scl:scl enable %{scl} '}perl Makefile.PL INSTALLDIRS=vendor NO_PACKLIST=1 && make %{?_smp_mflags}%{?scl:'}
@@ -55,6 +54,9 @@ sed -i -e '1 s|^#!/usr/bin/env perl|%(%{?scl:scl enable %{scl} '}perl -MConfig -
 %{_mandir}/man3/*
 
 %changelog
+* Tue Mar 17 2020 Petr Pisar <ppisar@redhat.com> - 3.13-452
+- Normalize a shellbang in examples/callback.pl (bug #1813348)
+
 * Thu Jan 02 2020 Jitka Plesnikova <jplesnik@redhat.com> - 3.13-451
 - SCL
 
